@@ -1,0 +1,166 @@
+{% extends 'showroom/base.html' %} {% block content %}
+<div class="-mx-4 md:mx-0">
+  <div
+    class="flex overflow-x-auto snap-x snap-mandatory gap-1 scrollbar-hide"
+    style="scroll-behavior: smooth"
+  >
+    {% for img in car.images.all %}
+    <div
+      class="snap-center shrink-0 w-full md:w-auto h-72 md:h-96 bg-gray-200 relative"
+    >
+      <img
+        src="{{ img.image.url }}"
+        loading="lazy"
+        alt="{{ car.model_name }}"
+        class="w-full h-full object-cover"
+      />
+
+      <div
+        class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full"
+      >
+        {{ forloop.counter }} / {{ car.images.count }}
+      </div>
+    </div>
+    {% empty %}
+    <div
+      class="w-full h-72 bg-gray-200 flex items-center justify-center text-gray-500"
+    >
+      ไม่มีรูปภาพ
+    </div>
+    {% endfor %}
+  </div>
+  <p class="text-center text-xs text-gray-400 mt-2 md:hidden">
+    👈 ปัดซ้ายเพื่อดูรูปเพิ่ม 👉
+  </p>
+</div>
+
+<div class="mt-4 pb-24">
+  <div class="flex justify-between items-start">
+    <h1 class="text-2xl font-bold text-gray-900 leading-tight">
+      {{ car.brand }} {{ car.model_name }}
+    </h1>
+    <span
+      class="px-3 py-1 text-sm font-bold rounded-full whitespace-nowrap ml-2 {% if car.status == 'AVAILABLE' %} bg-green-100 text-green-700 {% elif car.status == 'RESERVED' %} bg-yellow-100 text-yellow-700 {% else %} bg-red-100 text-red-700 {% endif %}"
+    >
+      {{ car.get_status_display }}
+    </span>
+  </div>
+
+  <p class="text-gray-500 mt-1">
+    ปี {{ car.year }} • {{ car.get_gear_display }}
+  </p>
+
+  <div class="mt-4 bg-blue-50 p-4 rounded-xl border border-blue-100">
+    <p class="text-sm text-blue-800">ราคาพิเศษ</p>
+    <div class="flex items-baseline gap-2">
+      <span class="text-3xl font-bold text-red-600"
+        >{{ car.price|floatformat:0 }}.-</span
+      >
+    </div>
+    {% if car.installment %}
+    <p class="text-sm text-gray-500 mt-1">
+      ⭐ ผ่อนประมาณ
+      <span class="font-bold text-gray-800"
+        >{{ car.installment|floatformat:0 }}</span
+      >
+      / เดือน
+    </p>
+    {% endif %}
+  </div>
+  <div
+    class="mt-4 bg-green-50 border border-green-200 rounded-xl p-3 flex items-start gap-3"
+  >
+    <div class="bg-green-100 p-2 rounded-full text-green-600">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+        />
+      </svg>
+    </div>
+    <div>
+      <h4 class="font-bold text-green-800 text-sm">มั่นใจคุณภาพรถบ้านแท้ 💯</h4>
+      <p class="text-xs text-green-700 mt-1">
+        ✅ ผ่านการตรวจเช็คสภาพ 200 จุดโดยช่างมืออาชีพจากอู่ของเราเอง <br />
+        ✅ รับประกันเครื่องยนต์และเกียร์ สบายใจหายห่วง
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-3 mt-6">
+    <div class="bg-white p-3 rounded-lg border text-center">
+      <span class="block text-gray-400 text-xs">เกียร์</span>
+      <span class="font-semibold">{{ car.get_gear_display }}</span>
+    </div>
+    <div class="bg-white p-3 rounded-lg border text-center">
+      <span class="block text-gray-400 text-xs">สี</span>
+      <span class="font-semibold">{{ car.color|default:"-" }}</span>
+    </div>
+    <div class="bg-white p-3 rounded-lg border text-center">
+      <span class="block text-gray-400 text-xs">เลขไมล์</span>
+      <span class="font-semibold">{{ car.mileage|default:"-" }}</span>
+    </div>
+    <div class="bg-white p-3 rounded-lg border text-center">
+      <span class="block text-gray-400 text-xs">เชื้อเพลิง</span>
+      <span class="font-semibold">{{ car.get_fuel_type_display }}</span>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <h3 class="font-bold text-lg mb-2">💬 รายละเอียดรถ</h3>
+    <div
+      class="text-gray-700 text-sm leading-relaxed whitespace-pre-line bg-white p-4 rounded-lg border"
+    >
+      {{ car.description|default:"ไม่มีรายละเอียดเพิ่มเติม" }}
+    </div>
+  </div>
+</div>
+{% endblock %} {% block footer %}
+<div
+  class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50"
+>
+  <div class="max-w-md mx-auto flex gap-2">
+    <a
+      href="tel:0896393052"
+      class="flex-1 bg-white border-2 border-blue-900 text-blue-900 text-center py-3 rounded-xl font-bold hover:bg-blue-50 transition flex items-center justify-center gap-2"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+        />
+      </svg>
+      โทรเลย
+    </a>
+
+    <a
+      href="https://line.me/ti/p/~hutip"
+      target="_blank"
+      class="flex-[2] bg-[#06C755] text-white text-center py-3 rounded-xl font-bold shadow-lg hover:bg-[#05b34c] transition flex items-center justify-center gap-2"
+    >
+      <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M12 .5C5.6.5.5 5.1.5 10.7c0 2.9 1.4 5.6 3.9 7.4-.2.8-.8 2.6-1.5 3.8 0 0-.2.4.2.5.3.1 1.9-.3 4.1-1.7 1.4.4 2.9.6 4.4.6 6.3 0 11.5-4.6 11.5-10.2S18.4.5 12 .5z"
+        />
+      </svg>
+      ทัก Line จองเลย
+    </a>
+  </div>
+</div>
+{% endblock %}
