@@ -36,7 +36,13 @@ class Car(models.Model):
     status = models.CharField("สถานะ", max_length=10, choices=STATUS_CHOICES, default='AVAILABLE')
     created_at = models.DateTimeField(auto_now_add=True)
     fuel_type = models.CharField("เชื้อเพลิง", max_length=10, choices=FUEL_CHOICES, default='DIESEL')
-    down_payment = models.IntegerField("เงินดาวน์ (บาท)", default=0, help_text="ใส่ 0 จะแสดงเป็น 'ฟรีดาวน์'")
+    down_payment = models.IntegerField(
+    "เงินดาวน์ (บาท)", 
+    default=0, 
+    null=True,   # อนุญาตให้เป็นค่าว่างใน Database
+    blank=True,  # อนุญาตให้เว้นว่างในหน้า Admin
+    help_text="ใส่ 0 = ฟรีดาวน์, เว้นว่าง = โชว์ขีด (-)"
+)
 
     def __str__(self):
         return f"{self.brand} {self.model_name} ({self.year})"
