@@ -67,40 +67,57 @@
         {{ car.get_status_display }}
       </div>
 
+      {% if car.down_payment == 0 %}
+        <div class="absolute top-0 left-0 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg shadow-md z-10">
+            🔥 ฟรีดาวน์
+        </div>
+      {% endif %}
+
     </div>
 
     <div class="p-4">
-  <h2 class="font-bold text-lg text-gray-900 leading-tight">
-    {{ car.brand }} {{ car.model_name }}
-  </h2>
-  
-  <div class="flex items-center gap-1 mt-1">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-    </svg>
-    <span class="text-xs text-green-600 font-medium">ตรวจสภาพโดยช่างแล้ว</span>
-  </div>
-  <p class="text-gray-500 text-sm mt-1">
-    ปี {{ car.year }} • {{ car.get_gear_display }}
-  </p>
-
-  <div class="mt-4 flex justify-between items-center">
-    <div>
-      <span class="text-red-600 font-bold text-xl block">{{ car.price|floatformat:0 }}.-</span>
+      <h2 class="font-bold text-lg text-gray-900 leading-tight">
+        {{ car.brand }} {{ car.model_name }}
+      </h2>
       
-      {% if car.installment %}
-      <span class="text-xs text-gray-400">ผ่อนเริ่มต้น {{ car.installment|floatformat:0 }}/เดือน</span>
-      {% endif %}
-    </div>
+      <div class="flex items-center gap-1 mt-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <span class="text-xs text-green-600 font-medium">ตรวจสภาพโดยช่างแล้ว</span>
+      </div>
 
-    <a 
-      href="{% url 'car_detail' car.pk %}" 
-      class="bg-blue-900 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800"
-    >
-      ดูรายละเอียด
-    </a>
-  </div>
-</div>
+      <p class="text-gray-500 text-sm mt-1">
+        ปี {{ car.year }} • {{ car.get_gear_display }}
+      </p>
+
+      <div class="mt-4 flex justify-between items-center">
+        <div>
+          <span class="text-red-600 font-bold text-xl block">{{ car.price|floatformat:0 }}.-</span>
+          
+          <div class="flex flex-wrap gap-2 mt-1">
+            {% if car.installment %}
+            <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                ผ่อน {{ car.installment|floatformat:0 }}/ด
+            </span>
+            {% endif %}
+
+            {% if car.down_payment > 0 %}
+            <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                ดาวน์ {{ car.down_payment|floatformat:0 }}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+
+        <a 
+          href="{% url 'car_detail' car.pk %}" 
+          class="bg-blue-900 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 shadow-sm"
+        >
+          ดูรายละเอียด
+        </a>
+      </div>
+    </div>
   </div>
   {% empty %}
     {% if not sold_cars %}
@@ -112,7 +129,7 @@
 {% if sold_cars %}
 <div class="border-t-2 border-dashed border-gray-300 pt-8 relative pb-8">
     <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gray-50 px-4 text-gray-400 text-sm font-bold">
-        ขายแล้ว [sold]
+        ขายแล้ว [SOLD]
     </div>
 
     <div class="grid grid-cols-2 gap-4 opacity-75 grayscale hover:grayscale-0 hover:opacity-100 transition duration-500">

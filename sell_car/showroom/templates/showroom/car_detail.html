@@ -50,22 +50,37 @@
     ปี {{ car.year }} • {{ car.get_gear_display }}
   </p>
 
-  <div class="mt-4 bg-blue-50 p-4 rounded-xl border border-blue-100">
-    <p class="text-sm text-blue-800">ราคาพิเศษ</p>
-    <div class="flex items-baseline gap-2">
-      <span class="text-3xl font-bold text-red-600"
-        >{{ car.price|floatformat:0 }}.-</span
-      >
+  <div class="bg-blue-50 p-4 border-b border-blue-100 flex justify-between items-center">
+        <div>
+            <p class="text-xs text-blue-800 font-bold uppercase tracking-wide">ราคาพิเศษ</p>
+            <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-extrabold text-red-600">{{ car.price|floatformat:0 }}.-</span>
+            </div>
+        </div>
+        {% if car.down_payment == 0 %}
+            <div class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm animate-pulse">
+                🔥 ฟรีดาวน์
+            </div>
+        {% endif %}
     </div>
-    {% if car.installment %}
-    <p class="text-sm text-gray-500 mt-1">
-      ⭐ ผ่อนประมาณ
-      <span class="font-bold text-gray-800"
-        >{{ car.installment|floatformat:0 }}</span
-      >
-      / เดือน
-    </p>
-    {% endif %}
+    <div class="grid grid-cols-2 divide-x divide-gray-100">
+        <div class="p-3 text-center">
+            <p class="text-xs text-gray-400 mb-1">ดาวน์เริ่มต้น</p>
+            {% if car.down_payment == 0 %}
+                <span class="text-lg font-bold text-orange-500">0 บาท</span>
+            {% else %}
+                <span class="text-lg font-bold text-gray-800">{{ car.down_payment|floatformat:0 }}.-</span>
+            {% endif %}
+        </div>
+    <div class="p-3 text-center bg-gray-50/50">
+            <p class="text-xs text-gray-400 mb-1">ผ่อนเริ่มต้น</p>
+            {% if car.installment %}
+                <span class="text-lg font-bold text-blue-900">{{ car.installment|floatformat:0 }}</span>
+                <span class="text-xs text-gray-500">/ด.</span>
+            {% else %}
+                <span class="text-sm text-gray-400">-</span>
+            {% endif %}
+        </div>
   </div>
   <div
     class="mt-4 bg-green-50 border border-green-200 rounded-xl p-3 flex items-start gap-3"
