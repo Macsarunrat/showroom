@@ -57,7 +57,7 @@ class CarAdmin(admin.ModelAdmin):
     inlines = [CarImageInline]
 
     # ฟีเจอร์เดิม: โชว์ราคาแบบมีคอมม่า + แก้สถานะได้เลย
-    list_display = ['brand', 'model_name', 'year', 'show_price', 'down_payment', 'installment', 'status']
+    list_display = ['brand', 'model_name', 'year', 'show_price', 'down_payment', 'installment', 'views_count', 'status']
     list_editable = ['status']  # แก้สถานะหน้าแรกได้
     list_filter = ['status', 'brand', 'gear']
     search_fields = ['model_name', 'brand']

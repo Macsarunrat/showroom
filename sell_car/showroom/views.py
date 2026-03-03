@@ -40,5 +40,7 @@ def car_list(request):
     return render(request, 'showroom/car_list.html', context)
 def car_detail(request, pk):
     car = get_object_or_404(Car, pk=pk)
-    # แก้บรรทัดนี้ด้วย: เปลี่ยน 'garage/...' เป็น 'showroom/...'
+    # เพิ่มยอดเข้าชม
+    car.views_count += 1
+    car.save()
     return render(request, 'showroom/car_detail.html', {'car': car})

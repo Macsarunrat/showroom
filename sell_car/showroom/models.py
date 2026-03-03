@@ -38,11 +38,13 @@ class Car(models.Model):
     fuel_type = models.CharField("เชื้อเพลิง", max_length=10, choices=FUEL_CHOICES, default='DIESEL')
     down_payment = models.CharField( 
     "เงินดาวน์ (บาท)", 
+    max_length=50,
     default=0, 
     null=True,   # อนุญาตให้เป็นค่าว่างใน Database
     blank=True,  # อนุญาตให้เว้นว่างในหน้า Admin
     help_text="ใส่ 0 = ฟรีดาวน์, ใส่เป็นข้อความก็ได้เช่น 2x,xxx" 
 )
+    views_count = models.PositiveIntegerField("ยอดเข้าชม", default=0)
 
     def __str__(self):
         return f"{self.brand} {self.model_name} ({self.year})"
