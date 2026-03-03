@@ -28,7 +28,7 @@ class Car(models.Model):
     model_name = models.CharField("รุ่น", max_length=100)
     year = models.CharField("ปี (ค.ศ.)", max_length=4)
     price = models.IntegerField("ราคา (บาท)")
-    installment = models.IntegerField("ผ่อนเริ่มต้น (บาท/เดือน)", blank=True, null=True, help_text="ใส่แค่ตัวเลข ถ้าไม่ใส่ ระบบจะไม่แสดง")
+    installment = models.CharField("ผ่อนเริ่มต้น (บาท/เดือน)", max_length=50, blank=True, null=True, help_text="ใส่เป็นตัวเลขหรือข้อความก็ได้ เช่น 3,xxx")
     gear = models.CharField("เกียร์", max_length=10, choices=GEAR_CHOICES, default='AUTO')
     color = models.CharField("สี", max_length=50, blank=True)
     mileage = models.CharField("เลขไมล์", max_length=50, blank=True, help_text="เช่น 45,xxx")
