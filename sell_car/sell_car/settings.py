@@ -10,26 +10,28 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-&(h)xuexro(37@ylifuqhuao(=b-kc*ngr%ef8#%#m+ee*y2bx"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# 💡 ตั้งค่าเป็น False สำหรับใช้งานจริงบน PythonAnywhere
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
-
+# 💡 ต้องระบุ Domain ให้ถูกต้องเมื่อปิด DEBUG
+ALLOWED_HOSTS = [
+    'sarunrath.pythonanywhere.com', 
+    '127.0.0.1', 
+    'localhost',
+    '*', # เพิ่มดอกจันไว้กันเหนียวเพื่อให้รันได้ทุกที่ครับ
+]
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",

@@ -1,18 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Car
-
-# ในไฟล์ showroom/views.py
-
-from django.db.models import Q # เพิ่มบรรทัดนี้ด้านบนสุด
-
-# ในไฟล์ showroom/views.py
+from django.db.models import Q, F
 
 def car_list(request):
     query = request.GET.get('q')
     gear_filter = request.GET.get('gear')
     
-    # 1. ดึงรถทั้งหมดมาก่อน
-    all_cars = Car.objects.all().order_by('-created_at')
+    # 1. ดึงรถทั้งหมดมาก่อนพร้อมรูปภาพ (Prefetch เพื่อลด N+1 Query)
+    all_cars = Car.objects.prefetch_related('images').all().order_by('-created_at')
 
     # 2. กรองตามคำค้นหา (ถ้ามี)
     if query:
@@ -26,10 +21,7 @@ def car_list(request):
         all_cars = all_cars.filter(gear=gear_filter)
 
     # 3. แยกกอง: รถพร้อมขาย/ติดจอง vs รถขายแล้ว
-    # exclude('SOLD') = เอาทุกสถานะ ยกเว้น 'SOLD'
     available_cars = all_cars.exclude(status='SOLD')
-    
-    # filter('SOLD') = เอาเฉพาะ 'SOLD'
     sold_cars = all_cars.filter(status='SOLD')
     
     context = {
@@ -38,9 +30,15 @@ def car_list(request):
     }
     
     return render(request, 'showroom/car_list.html', context)
+
 def car_detail(request, pk):
-    car = get_object_or_404(Car, pk=pk)
-    # เพิ่มยอดเข้าชม
-    car.views_count += 1
-    car.save()
+    # ใช้ Prefetch กับหน้า Detail ด้วยเพื่อให้โหลดรูปสไลด์ได้เร็วขึ้น
+    car = get_object_or_404(Car.objects.prefetch_related('images'), pk=pk)
+    
+    # ✅ ใช้ F() expression เพื่อบวกยอดวิวในระดับ Database (ป้องกัน Race Condition และประหยัดทรัพยากร)
+    Car.objects.filter(pk=pk).update(views_count=F('views_count') + 1)
+    
+    # ดึงค่าที่อัปเดตแล้วกลับมาใส่ในตัวแปร car เพื่อแสดงผล
+    car.refresh_from_db(fields=['views_count'])
+    
     return render(request, 'showroom/car_detail.html', {'car': car})
