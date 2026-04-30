@@ -108,74 +108,87 @@
     </style>
 
     <script>
-        let deferredPrompt;
-        const banner = document.getElementById('pwa-install-banner');
-        const installBtn = document.getElementById('install-button');
-        const closeBtn = document.getElementById('close-banner');
-        const iosModal = document.getElementById('ios-install-modal');
-        const closeIosBtn = document.getElementById('close-ios-modal');
+    const banner = document.getElementById('pwa-install-banner');
+    const installBtn = document.getElementById('install-button');
+    const closeBtn = document.getElementById('close-banner');
+    const iosModal = document.getElementById('ios-install-modal');
+    const closeIosBtn = document.getElementById('close-ios-modal');
+    let deferredPrompt;
 
-        function showBanner() {
-            if (sessionStorage.getItem('pwa-banner-dismissed') === 'true') return;
-            banner.classList.remove('hidden');
-            setTimeout(() => banner.classList.remove('-translate-y-full'), 100);
-        }
-
-        // Check if already installed
-        const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-        if (!isAppInstalled) {
-            console.log("PWA: App not installed, checking for installation capability...");
-            
-            // Android / Chrome Logic
-            window.addEventListener('beforeinstallprompt', (e) => {
-                console.log("PWA: beforeinstallprompt fired!");
-                e.preventDefault();
-                deferredPrompt = e;
-                showBanner();
-            });
-
-            // iOS & Other detection
-            const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && !window.MSStream;
-            
-            if (isIOS && !window.navigator.standalone) {
-                console.log("PWA: iOS detected, showing manual guide...");
-                setTimeout(showBanner, 3000);
-            }
-
-            // Fallback for Android/PC if beforeinstallprompt is slow or disabled
-            setTimeout(() => {
-                if (!deferredPrompt && !isIOS && !isAppInstalled) {
-                    console.log("PWA: prompt not fired automatically, showing fallback banner...");
-                    showBanner();
-                }
-            }, 6000);
-        }
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`PWA: User response to install prompt: ${outcome}`);
-                deferredPrompt = null;
-                banner.classList.add('-translate-y-full');
-            } else {
-                console.log("PWA: Manual installation steps required (iOS or prompt unavailable).");
-                iosModal.classList.remove('hidden');
-            }
-        });
-
-        closeBtn.addEventListener('click', () => { 
-            banner.classList.add('-translate-y-full'); 
-            sessionStorage.setItem('pwa-banner-dismissed', 'true');
-        });
+    // ฟังก์ชันสำหรับโชว์แบนเนอร์แบบมี Animation
+    function showBanner() {
+        // ถ้าผู้ใช้เคยกดกากบาทปิดไปแล้วในรอบนี้ จะไม่กวนใจอีก
+        if (sessionStorage.getItem('pwa-banner-dismissed') === 'true') return;
         
-        closeIosBtn.addEventListener('click', () => { 
-            iosModal.classList.add('hidden'); 
-            banner.classList.add('-translate-y-full'); 
-            sessionStorage.setItem('pwa-banner-dismissed', 'true');
+        banner.classList.remove('hidden');
+        // ให้เวลาเบราว์เซอร์ render นิดนึงก่อนสไลด์ลงมา
+        setTimeout(() => banner.classList.remove('-translate-y-full'), 50);
+    }
+
+    // ฟังก์ชันสำหรับปิดแบนเนอร์
+    function hideAllBanners() {
+        banner.classList.add('-translate-y-full');
+        iosModal.classList.add('hidden');
+        sessionStorage.setItem('pwa-banner-dismissed', 'true');
+        setTimeout(() => banner.classList.add('hidden'), 300); // รอ animation จบ
+    }
+
+    // 1. เช็กสถานะ: ติดตั้งแอปนี้ไปแล้วหรือยัง?
+    const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || 
+                           window.navigator.standalone === true || 
+                           document.referrer.includes('android-app://');
+
+    if (isAppInstalled) {
+        console.log("PWA: แอปถูกติดตั้งแล้ว (ทำงานในโหมด Standalone) -> ไม่แสดงแบนเนอร์");
+        // *** จบการทำงานตรงนี้เลย ถ้าติดตั้งแล้วจะไม่มีอะไรเด้งกวนใจ ***
+    } else {
+        console.log("PWA: แอปยังไม่ถูกติดตั้ง -> เตรียมความพร้อมระบบดาวน์โหลด");
+
+        // 2. สำหรับ Android และ Desktop (รอสัญญาณว่าเว็บพร้อมติดตั้ง)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log("PWA: ได้รับสัญญาณพร้อมติดตั้งจากระบบ!");
+            e.preventDefault(); // ป้องกันไม่ให้เบราว์เซอร์โชว์ Popup มาตรฐาน
+            deferredPrompt = e; // เก็บ event ไว้ใช้ตอนกดปุ่ม
+            
+            // หน่วงเวลา 2 วินาทีค่อยเด้ง เพื่อความสวยงาม
+            setTimeout(showBanner, 2000); 
         });
-    </script>
+
+        // 3. สำหรับ iOS (Safari ไม่มี beforeinstallprompt จึงต้องใช้วิธีเช็ก Device)
+        const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && 
+                      !window.MSStream;
+        
+        if (isIOS) {
+            console.log("PWA: ตรวจพบ iOS -> รอแสดงคำแนะนำการติดตั้ง");
+            // หน่วงเวลา 2 วินาทีเช่นกัน
+            setTimeout(showBanner, 2000);
+        }
+    }
+
+    // --- จัดการ Event การกดปุ่มต่างๆ ---
+
+    // เมื่อกดปุ่ม "ติดตั้ง" บนแบนเนอร์
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            // กรณี Android/Desktop: เรียก Popup ติดตั้งของระบบขึ้นมา
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`PWA: ผลลัพธ์การกดติดตั้ง: ${outcome}`);
+            deferredPrompt = null;
+            hideAllBanners();
+        } else {
+            // กรณี iOS (หรือไม่มี prompt): เปิด Modal สอนวิธีติดตั้งแทน
+            iosModal.classList.remove('hidden');
+        }
+    });
+
+    // เมื่อกดปุ่มกากบาทปิดแบนเนอร์
+    closeBtn.addEventListener('click', hideAllBanners);
+    
+    // เมื่อกดปุ่ม "รับทราบ" ในหน้าสอนติดตั้งของ iOS
+    closeIosBtn.addEventListener('click', hideAllBanners);
+</script>
 
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
