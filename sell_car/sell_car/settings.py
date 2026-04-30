@@ -25,8 +25,8 @@ DEBUG = False
 
 # 💡 ต้องระบุ Domain ให้ถูกต้องเมื่อปิด DEBUG
 ALLOWED_HOSTS = [
-    'sarunrath.pythonanywhere.com', 
-    '127.0.0.1', 
+    'sarunrath.pythonanywhere.com',
+    '127.0.0.1',
     'localhost',
     '*', # เพิ่มดอกจันไว้กันเหนียวเพื่อให้รันได้ทุกที่ครับ
 ]
