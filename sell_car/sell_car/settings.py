@@ -26,13 +26,8 @@ DEBUG = False
 
 # 💡 แก้ไขให้ตรงกับ Username 'sarunratH' ของคุณ
 ALLOWED_HOSTS = [
-<<<<<<< HEAD
-    'sarunrath.pythonanywhere.com',
-    '127.0.0.1',
-=======
     'sarunratH.pythonanywhere.com', 
     '127.0.0.1', 
->>>>>>> 46d64cfb6e1acf58c6f440f8b7301c1154850725
     'localhost',
     '*', 
 ]
