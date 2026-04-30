@@ -20,15 +20,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-&(h)xuexro(37@ylifuqhuao(=b-kc*ngr%ef8#%#m+ee*y2bx"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# 💡 ตั้งค่าเป็น False สำหรับใช้งานจริงบน PythonAnywhere
+# 💡 เมื่อมั่นใจว่าตั้งค่า Static/Media ใน PythonAnywhere แล้ว ให้เป็น False
+# แต่ถ้าอยากให้รูปขึ้นทันทีแบบไม่ต้องตั้งค่าอะไร ให้เปลี่ยนเป็น True ครับ
 DEBUG = False
 
-# 💡 ต้องระบุ Domain ให้ถูกต้องเมื่อปิด DEBUG
+# 💡 แก้ไขให้ตรงกับ Username 'sarunratH' ของคุณ
 ALLOWED_HOSTS = [
+<<<<<<< HEAD
     'sarunrath.pythonanywhere.com',
     '127.0.0.1',
+=======
+    'sarunratH.pythonanywhere.com', 
+    '127.0.0.1', 
+>>>>>>> 46d64cfb6e1acf58c6f440f8b7301c1154850725
     'localhost',
-    '*', # เพิ่มดอกจันไว้กันเหนียวเพื่อให้รันได้ทุกที่ครับ
+    '*', 
 ]
 
 # Application definition

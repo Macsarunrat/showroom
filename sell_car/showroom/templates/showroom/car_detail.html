@@ -50,6 +50,7 @@
     ปี {{ car.year }} • {{ car.get_gear_display }}
   </p>
 
+  {% if car.status != 'SOLD' %}
   <div
     class="bg-blue-50 p-4 border-b border-blue-100 flex justify-between items-center"
   >
@@ -96,6 +97,8 @@
       {% endif %}
     </div>
   </div>
+  {% endif %}
+
   <div
     class="mt-4 bg-green-50 border border-green-200 rounded-xl p-3 flex items-start gap-3"
   >
@@ -188,7 +191,7 @@
           d="M12 .5C5.6.5.5 5.1.5 10.7c0 2.9 1.4 5.6 3.9 7.4-.2.8-.8 2.6-1.5 3.8 0 0-.2.4.2.5.3.1 1.9-.3 4.1-1.7 1.4.4 2.9.6 4.4.6 6.3 0 11.5-4.6 11.5-10.2S18.4.5 12 .5z"
         />
       </svg>
-      ทัก Line จองเลย
+      {% if car.status == 'SOLD' %}สอบถามเพิ่มเติม{% else %}ทัก Line จองเลย{% endif %}
     </a>
   </div>
 </div>
