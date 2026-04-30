@@ -96,35 +96,37 @@
         ปี {{ car.year }} • {{ car.get_gear_display }}
       </p>
 
-      <div class="mt-4 flex justify-between items-center">
-        <div>
-          <span class="text-red-600 font-bold text-xl block">
-            {{ car.price|floatformat:0 }}.-
-          </span>
+      <div class="mt-4">
+        <div class="flex justify-between items-end mb-3">
+          <div>
+            <span class="text-red-600 font-bold text-xl block">
+              {{ car.price|floatformat:0 }}.-
+            </span>
 
-          <div class="flex flex-wrap gap-2 mt-1">
-            {% if car.installment %}
-            <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
-              ผ่อน {{ car.installment }}/ด
-            </span>
-            {% endif %} 
-            
-            {% if car.down_payment == 0 %} 
-               {% elif car.down_payment %}
-            <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
-              ดาวน์ {{ car.down_payment }}
-            </span>
-            {% else %}
-            <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
-              ดาวน์ -
-            </span>
-            {% endif %}
+            <div class="flex flex-wrap gap-2 mt-1">
+              {% if car.installment %}
+              <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                ผ่อน {{ car.installment }}/ด
+              </span>
+              {% endif %} 
+              
+              {% if car.down_payment == 0 %} 
+                 {% elif car.down_payment %}
+              <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                ดาวน์ {{ car.down_payment }}
+              </span>
+              {% else %}
+              <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                ดาวน์ -
+              </span>
+              {% endif %}
+            </div>
           </div>
         </div>
 
         <a
           href="{% url 'car_detail' car.pk %}"
-          class="bg-blue-900 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 shadow-sm"
+          class="block w-full text-center bg-blue-900 text-white text-sm py-2.5 rounded-lg hover:bg-blue-800 shadow-sm font-bold"
         >
           ดูรายละเอียด
         </a>
