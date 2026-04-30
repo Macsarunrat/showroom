@@ -28,7 +28,7 @@ urlpatterns = [
     path('car/<int:pk>/', views.car_detail, name='car_detail'), # หน้ารายละเอียด
     
     # PWA Files
-    path('manifest.json', TemplateView.as_view(template_name='showroom/manifest.json', content_type='application/json')),
+    path('manifest.json', TemplateView.as_view(template_name='showroom/manifest.json', content_type='application/manifest+json')),
     path('sw.js', TemplateView.as_view(template_name='showroom/sw.js', content_type='application/javascript')),
 ]
 
