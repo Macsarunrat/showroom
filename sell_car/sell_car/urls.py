@@ -19,12 +19,17 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 from showroom import views # นำเข้า views ที่เราเพิ่งเขียน
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.car_list, name='car_list'), # หน้าแรก
     path('car/<int:pk>/', views.car_detail, name='car_detail'), # หน้ารายละเอียด
+    
+    # PWA Files
+    path('manifest.json', TemplateView.as_view(template_name='showroom/manifest.json', content_type='application/json')),
+    path('sw.js', TemplateView.as_view(template_name='showroom/sw.js', content_type='application/javascript')),
 ]
 
 # สำคัญมาก! บรรทัดนี้ทำให้โชว์รูปที่อัพโหลดได้ในโหมด DEBUG
