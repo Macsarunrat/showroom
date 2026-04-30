@@ -1,6 +1,6 @@
 {
   "name": "Sell Car Showroom",
-  "short_name": "SellCar",
+  "short_name": "เต็นท์รถบ้านกระต่าย",
   "description": "ตลาดรถบ้าน สภาพนางฟ้า คัดเกรด A",
   "start_url": "/",
   "display": "standalone",
