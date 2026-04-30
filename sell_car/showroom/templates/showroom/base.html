@@ -7,12 +7,25 @@
     <title>เต็นท์รถบ้านกระต่าย - คัดรถสวยคุณภาพดี</title>
     
     <!-- PWA & Mobile Optimization -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.json" id="pwa-manifest">
     <meta name="theme-color" content="#1e3a8a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SellCar">
     <link rel="apple-touch-icon" href="{% static 'showroom/icon.jpg' %}">
+
+    <script>
+        // Verify manifest loading
+        window.addEventListener('load', () => {
+            const manifest = document.getElementById('pwa-manifest');
+            fetch(manifest.href)
+                .then(response => {
+                    if (response.ok) console.log("PWA: Manifest loaded successfully");
+                    else console.error("PWA: Manifest failed to load", response.status);
+                })
+                .catch(err => console.error("PWA: Manifest fetch error", err));
+        });
+    </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -23,16 +36,24 @@
 <body class="bg-gray-50 text-gray-800 pb-24">
     <!-- Service Worker Registration -->
     <script>
+        console.log("PWA: Checking for Service Worker support...");
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('Service Worker registered!'))
-                    .catch(err => console.log('Service Worker registration failed:', err));
+                console.log("PWA: Page loaded, registering Service Worker...");
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(reg => {
+                        console.log('PWA: Service Worker registered successfully!', reg.scope);
+                    })
+                    .catch(err => {
+                        console.error('PWA: Service Worker registration failed:', err);
+                    });
             });
+        } else {
+            console.warn("PWA: Service Worker not supported in this browser.");
         }
     </script>
 
-    <!-- PWA Install Banner (Lightweight & CDN Icons) -->
+    <!-- PWA Install Banner -->
     <div id="pwa-install-banner" class="hidden fixed top-0 left-0 w-full bg-blue-900 text-white z-[60] shadow-lg transform transition-transform duration-300 -translate-y-full">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -95,6 +116,7 @@
         const closeIosBtn = document.getElementById('close-ios-modal');
 
         function showBanner() {
+            if (sessionStorage.getItem('pwa-banner-dismissed') === 'true') return;
             banner.classList.remove('hidden');
             setTimeout(() => banner.classList.remove('-translate-y-full'), 100);
         }
@@ -103,8 +125,11 @@
         const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
         if (!isAppInstalled) {
+            console.log("PWA: App not installed, checking for installation capability...");
+            
             // Android / Chrome Logic
             window.addEventListener('beforeinstallprompt', (e) => {
+                console.log("PWA: beforeinstallprompt fired!");
                 e.preventDefault();
                 deferredPrompt = e;
                 showBanner();
@@ -113,36 +138,43 @@
             // iOS & Other detection
             const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && !window.MSStream;
             
-            // For iOS, we show the banner manually because beforeinstallprompt isn't supported
             if (isIOS && !window.navigator.standalone) {
-                // Short delay to ensure layout is ready
-                setTimeout(showBanner, 2000);
+                console.log("PWA: iOS detected, showing manual guide...");
+                setTimeout(showBanner, 3000);
             }
+
+            // Fallback for Android/PC if beforeinstallprompt is slow or disabled
+            setTimeout(() => {
+                if (!deferredPrompt && !isIOS && !isAppInstalled) {
+                    console.log("PWA: prompt not fired automatically, showing fallback banner...");
+                    showBanner();
+                }
+            }, 6000);
         }
 
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
+                console.log(`PWA: User response to install prompt: ${outcome}`);
                 deferredPrompt = null;
                 banner.classList.add('-translate-y-full');
             } else {
+                console.log("PWA: Manual installation steps required (iOS or prompt unavailable).");
                 iosModal.classList.remove('hidden');
             }
         });
 
         closeBtn.addEventListener('click', () => { 
             banner.classList.add('-translate-y-full'); 
-            // Save in session to not bug the user again in this session
             sessionStorage.setItem('pwa-banner-dismissed', 'true');
         });
         
-        closeIosBtn.addEventListener('click', () => { iosModal.classList.add('hidden'); banner.classList.add('-translate-y-full'); });
-
-        // Check if dismissed in this session
-        if (sessionStorage.getItem('pwa-banner-dismissed') === 'true') {
-            banner.classList.add('hidden');
-        }
+        closeIosBtn.addEventListener('click', () => { 
+            iosModal.classList.add('hidden'); 
+            banner.classList.add('-translate-y-full'); 
+            sessionStorage.setItem('pwa-banner-dismissed', 'true');
+        });
     </script>
 
     <nav class="bg-white shadow-sm sticky top-0 z-50">
