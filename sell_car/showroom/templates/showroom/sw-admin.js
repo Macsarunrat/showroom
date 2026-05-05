@@ -1,9 +1,9 @@
 // sw-admin.js สำหรับ Django Admin
 
-const CACHE_NAME = 'admin-secure-v2'; // อัปเดตเวอร์ชันเป็น v2 เพื่อเคลียร์ของเก่า
+const CACHE_NAME = 'admin-secure-v3'; // อัปเดตเวอร์ชันเป็น v2 เพื่อเคลียร์ของเก่า
 const STATIC_ASSETS = [
   '/manifest-admin.json',
-  '/static/showroom/icon-admin-192.png' // ใส่ path รูปของคุณ
+//   '/static/showroom/icon-192.png' // ใส่ path รูปของคุณ
 ];
 
 self.addEventListener('install', (event) => {
