@@ -28,19 +28,19 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'sarunratH.pythonanywhere.com', 
     '127.0.0.1', 
-    'localhost',
-    '*', 
+    'localhost'
 ]
 
 # Application definition
 INSTALLED_APPS = [
+    "showroom",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "showroom"
+    
 ]
 
 MIDDLEWARE = [
