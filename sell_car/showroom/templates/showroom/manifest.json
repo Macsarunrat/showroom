@@ -1,9 +1,9 @@
 {
-  "id": "/",
+  "id": "sellcar-customer-app",
   "name": "เต็นท์รถบ้านกระต่าย",
   "short_name": "เต็นท์รถบ้านกระต่าย",
   "description": "ตลาดรถบ้าน สภาพนางฟ้า คัดเกรด A",
-  "start_url": "/",
+  "start_url": "/?mode=pwa",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1e3a8a",
