@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | ระบบจัดการรถบ้านกระต่าย{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    
+    <!-- แทรก PWA ของ Admin ตรงนี้ -->
+    <link rel="manifest" href="/manifest-admin.json">
+    <meta name="theme-color" content="#b91c1c">
+    
+    <!-- รูปไอคอนสำหรับ iOS (อย่าลืมอัปโหลดรูปลง static ด้วยนะครับ) -->
+    <link rel="apple-touch-icon" href="{% static 'showroom/icon-192.png' %}">
+
+    <script>
+        // สมัคร Service Worker ตัวใหม่สำหรับ Admin
+        console.log("Admin PWA: Checking support...");
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // อ้างอิง scope ให้คุมเฉพาะ /admin/
+                navigator.serviceWorker.register('/sw-admin.js', { scope: '/admin/' })
+                    .then(reg => {
+                        console.log('Django Admin PWA Registered Successfully!', reg.scope);
+                    })
+                    .catch(err => {
+                        console.error('Admin PWA Error:', err);
+                    });
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">ระบบจัดการรถบ้านกระต่าย</a></h1>
+{% endblock %}

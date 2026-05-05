@@ -27,9 +27,13 @@ urlpatterns = [
     path('', views.car_list, name='car_list'), # หน้าแรก
     path('car/<int:pk>/', views.car_detail, name='car_detail'), # หน้ารายละเอียด
     
-    # PWA Files
+    # === PWA Files สำหรับลูกค้า (หน้าบ้าน) ===
     path('manifest.json', TemplateView.as_view(template_name='showroom/manifest.json', content_type='application/manifest+json')),
     path('sw.js', TemplateView.as_view(template_name='showroom/sw.js', content_type='application/javascript')),
+
+    # === PWA Files สำหรับ Admin (หลังบ้าน) ===
+    path('manifest-admin.json', TemplateView.as_view(template_name='showroom/manifest-admin.json', content_type='application/manifest+json')),
+    path('sw-admin.js', TemplateView.as_view(template_name='showroom/sw-admin.js', content_type='application/javascript')),
 ]
 
 # สำคัญมาก! บรรทัดนี้ทำให้โชว์รูปที่อัพโหลดได้ในโหมด DEBUG

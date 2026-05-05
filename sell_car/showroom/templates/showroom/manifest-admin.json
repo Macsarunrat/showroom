@@ -1,0 +1,26 @@
+{
+  "id": "/admin/",
+  "name": "ระบบจัดการหลังบ้าน - รถบ้านกระต่าย",
+  "short_name": "Admin กระต่าย",
+  "description": "แอปพลิเคชันสำหรับจัดการสต็อกรถเต็นท์กระต่าย",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "background_color": "#f3f4f6",
+  "theme_color": "#b91c1c",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/static/showroom/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/showroom/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
